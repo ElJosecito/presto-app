@@ -2,10 +2,11 @@ import { View, Text, TextInput, Image, Keyboard, KeyboardAvoidingView, ScrollVie
 import React, { useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Eye, EyeOff } from 'lucide-react-native'
+import { useRouter } from 'expo-router'
 
 const Login = () => {
+  const router = useRouter()
   const insets = useSafeAreaInsets()
-
   const [showPassword, setShowPassword] = useState(false)
 
   const togglePassword = () => {
@@ -58,7 +59,9 @@ const Login = () => {
 
               <View className="flex flex-row justify-center items-center w-full">
                 <Text className="mr-1">Are you a client?</Text>
-                <Pressable className="">
+                <Pressable onPress={()=>{
+                  router.push('LenderLogin')
+                }}>
                   <Text className="font-bold text-[#6BB239]">Login here</Text>
                 </Pressable>
               </View>
