@@ -2,10 +2,11 @@ import { View, Text, Pressable, FlatList, ScrollView, Image, TextInput } from 'r
 import React from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Plus, Search, X, Check } from 'lucide-react-native'
+import { useRouter } from 'expo-router'
 
 const HomeScreen = () => {
     const insets = useSafeAreaInsets()
-
+    const router = useRouter()
     const data = [
         {
             id: 1,
@@ -43,7 +44,7 @@ const HomeScreen = () => {
             name: 'Jane Doe',
             phone: '1234567890',
             loanAmount: 1000,
-            remainingBalance: 500,
+            remainingBalance: 600,
             dueDate: '2022-12-12',
             isPaid: true
         },
@@ -52,13 +53,18 @@ const HomeScreen = () => {
             image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             name: 'John Doe',
             phone: '1234567890',
-            loanAmount: 1000,
-            remainingBalance: 500,
+            loanAmount: 10000,
+            remainingBalance: 10000,
             dueDate: '2022-12-12',
             isPaid: false
         },
 
     ]
+
+    const formatMoney = (amount) => {
+        const num = Number(amount);
+        return num.toLocaleString('en-US');
+    };
 
     return (
         <SafeAreaProvider>
@@ -100,7 +106,13 @@ const HomeScreen = () => {
                     style={{ flex: 1, paddingTop: 7, marginTop: 3 }}
                     keyExtractor={item => item.id.toString()}
                     renderItem={({ item }) => (
-                        <View
+                        <Pressable
+                            onPress={() => {
+                                router?.push({
+                                    pathname: '/(tabs)/Home/InfoScreen',
+                                    params: item
+                                })
+                            }}
                             // shadow
                             style={{
                                 borderRadius: 16,
@@ -146,12 +158,12 @@ const HomeScreen = () => {
                                         <Text className="text-sm text-gray-400/80">{item.phone}</Text>
                                     </View>
                                     <View className="flex-shrink">
-                                        <Text className="font-bold capitalize text-lg">$ {item.remainingBalance}</Text>
+                                        <Text className="font-bold capitalize text-lg">$ {formatMoney(item.remainingBalance)}</Text>
                                         <Text className="text-sm text-gray-400/80">{item.dueDate}</Text>
                                     </View>
                                 </View>
                             </View>
-                        </View>
+                        </Pressable>
                     )}
                 />
 
