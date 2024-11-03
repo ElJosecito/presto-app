@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router'
 const HomeScreen = () => {
     const insets = useSafeAreaInsets()
     const router = useRouter()
+
     const data = [
         {
             id: 1,
@@ -15,8 +16,19 @@ const HomeScreen = () => {
             phone: '1234567890',
             loanAmount: 1000,
             remainingBalance: 500,
-            dueDate: '2022-12-12',
-            isPaid: false
+            nextPaymentDate: '2022-12-12',
+            interestRate: 25,
+            paymentIntervalDays: 30,
+            isPaid: false,
+            history: [
+                {
+                    id: 1,
+                    amount: 100,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                }
+            ]
         },
         {
             id: 2,
@@ -25,8 +37,11 @@ const HomeScreen = () => {
             phone: '1234567890',
             loanAmount: 1000,
             remainingBalance: 10,
-            dueDate: '2022-12-12',
-            isPaid: true
+            nextPaymentDate: '2022-12-12',
+            interestRate: 25,
+            paymentIntervalDays: 30,
+            isPaid: true,
+            history: []
         },
         {
             id: 3,
@@ -35,8 +50,33 @@ const HomeScreen = () => {
             phone: '1234567890',
             loanAmount: 1300,
             remainingBalance: 780,
-            dueDate: '2022-12-12',
-            isPaid: false
+            nextPaymentDate: '2022-12-12',
+            interestRate: 25,
+            paymentIntervalDays: 30,
+            isPaid: false,
+            history: [
+                {
+                    id: 1,
+                    amount: 100,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                },
+                {
+                    id: 2,
+                    amount: 100,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                },
+                {
+                    id: 3,
+                    amount: 100,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                }
+            ]
         },
         {
             id: 4,
@@ -45,8 +85,33 @@ const HomeScreen = () => {
             phone: '1234567890',
             loanAmount: 1000,
             remainingBalance: 600,
-            dueDate: '2022-12-12',
-            isPaid: true
+            nextPaymentDate: '2022-12-12',
+            interestRate: 25,
+            paymentIntervalDays: 120,
+            isPaid: true,
+            history: [
+                {
+                    id: 1,
+                    amount: 100,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                },
+                {
+                    id: 2,
+                    amount: 100,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                },
+                {
+                    id: 3,
+                    amount: 100,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                }
+            ]
         },
         {
             id: 5,
@@ -55,8 +120,33 @@ const HomeScreen = () => {
             phone: '1234567890',
             loanAmount: 10000,
             remainingBalance: 10000,
-            dueDate: '2022-12-12',
-            isPaid: false
+            nextPaymentDate: '2022-12-12',
+            interestRate: 25,
+            paymentIntervalDays: 7,
+            isPaid: false,
+            history: [
+                {
+                    id: 1,
+                    amount: 100,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                },
+                {
+                    id: 2,
+                    amount: 100,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                },
+                {
+                    id: 3,
+                    amount: 140,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                }
+            ]
         },
 
     ]
@@ -104,13 +194,14 @@ const HomeScreen = () => {
                 <FlatList
                     data={data}
                     style={{ flex: 1, paddingTop: 7, marginTop: 3 }}
+                    showsVerticalScrollIndicator={false}
                     keyExtractor={item => item.id.toString()}
                     renderItem={({ item }) => (
                         <Pressable
                             onPress={() => {
                                 router?.push({
                                     pathname: '/(tabs)/Home/InfoScreen',
-                                    params: item
+                                    params: { ...item, history: JSON.stringify(item.history) }
                                 })
                             }}
                             // shadow

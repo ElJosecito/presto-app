@@ -4,7 +4,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 // fontawesome5 react native
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-const MonthlyPaymentChart = ({ fill, loanAmount, remaining }) => {
+const MonthlyPaymentChart = ({ fill, loanAmount, remaining, paymentInterval }) => {
     const remainingFill = fill === 0 ? 100 : 93 - fill; // Porcentaje restante
 
     // Calcular la rotación de la flecha
@@ -35,7 +35,40 @@ const MonthlyPaymentChart = ({ fill, loanAmount, remaining }) => {
                 height: 280,
             }}
         >
-            <Text style={styles.title}>Monthly Payment</Text>
+            {paymentInterval === 7 ? (
+                <View className="flex flex-row items-start w-full px-3">
+                    <Text className="text-xl mb-4 font-bold">Weekly</Text>
+                </View>
+            ) : paymentInterval === 15 ? (
+                <View className="flex flex-row items-start w-full px-3">
+                    <Text className="text-xl mb-4 font-bold">Biweekly</Text>
+                </View>
+            ) : paymentInterval === 30 ? (
+                <View className="flex flex-row items-start w-full px-3">
+                    <Text className="text-xl mb-4 font-bold">Monthly</Text>
+                </View>
+            ) : paymentInterval === 90 ? (
+                <View className="flex flex-row items-start w-full px-3">
+                    <Text className="text-xl mb-4 font-bold">Every 3 Months</Text>
+                </View>
+            ) : paymentInterval === 120 ? (
+                <View className="flex flex-row items-start w-full px-3">
+                    <Text className="text-xl mb-4 font-bold">Every 4 Months</Text>
+                </View>
+            ) : paymentInterval === 180 ? (
+                <View className="flex flex-row items-start w-full px-3">
+                    <Text className="text-xl mb-4 font-bold">Every 6 Months</Text>
+                </View>
+            ) : paymentInterval === 365 ? (
+                <View className="flex flex-row items-start w-full px-3">
+                    <Text className="text-xl mb-4 font-bold">Yearly</Text>
+                </View>
+
+            ) : (
+                <View className="flex flex-row items-start w-full px-3">
+                    <Text className="text-xl mb-4 font-bold">Custom Interval</Text>
+                </View>
+            )}
 
             {/* Contenedor para ocultar la mitad inferior */}
             <View style={styles.circularProgressContainer} className="relative">
