@@ -5,6 +5,7 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { ChartLine, Calendar, Percent, ChevronRight, Undo2, User } from 'lucide-react-native'
+import { parse } from 'react-native-svg'
 const InfoScreen = () => {
     const insets = useSafeAreaInsets()
     const router = useRouter()
@@ -166,28 +167,37 @@ const InfoScreen = () => {
                     <View className="flex bg-[#FCE849] rounded-2xl mt-5 py-4 px-4 h-44">
                         <View className="flex flex-row justify-between ">
                             <Text className="text-xl font-bold text-black">History</Text>
-                            <Pressable className="p-1 rounded-full bg-black" onPress={() => router.push('/(tabs)/Home/HistoryScreen', { history: JSON.stringify(history) })}>
+                            <Pressable className="p-1 rounded-full bg-black" onPress={() => router?.push({
+                                pathname: '/(tabs)/Home/HistoryScreen',
+                                params: {
+                                    history: JSON.stringify(history)
+                                }
+                            })}>
                                 <ChevronRight size={24} color="#fff" strokeWidth={3} />
                             </Pressable>
                         </View>
                         {
                             history.length > 0 ? (
-                                <ScrollView 
-                                showsVerticalScrollIndicator={false}
-                                nestedScrollEnabled={true}>
-                                   {
-                                    history.map((item, index) => (
-                                        <View
-                                        key={index}
-                                        className="flex flex-row items-center justify-between border-b border-black/10 mt-2"
-                                    >
-                                        <Text className="text-3xl font-bold text-[#6BB239]">${item.amount}</Text>
-                                        <Text className="text-xl font-bold text-black">{item.interest}</Text>
-                                        <Text className="text-xl font-bold text-black">{item.principal}</Text>
-                                        <Text className="text-sm font-bold text-black/30">{item.date}</Text>
-                                    </View>
-                                    ))
-                                   }
+                                <ScrollView
+                                    showsVerticalScrollIndicator={false}
+                                    nestedScrollEnabled={true}>
+                                    {
+                                        history.map((item, index) => (
+                                            <View
+                                                key={index}
+                                                className="flex flex-row items-center justify-between border-b border-black/10 mt-2"
+                                            >
+                                                <View className="flex flex-row items-end">
+                                                    <Text className="text-sm font-bold text-black/30">$</Text>
+                                                    <Text className="text-3xl font-bold text-[#000000]">{item.amount}</Text>
+
+                                                </View>
+                                                <Text className="text-xl font-bold text-black">{item.principal}</Text>
+                                                <Text className="text-xl font-bold text-red-500">{item.interest}</Text>
+                                                <Text className="text-sm font-bold text-black/30">{item.date}</Text>
+                                            </View>
+                                        ))
+                                    }
                                 </ScrollView>
                             ) : (
                                 <View className="flex items-center justify-center">

@@ -13,7 +13,7 @@ const layout = () => {
             }} />
             <Stack.Screen name="HistoryScreen"
                 options={{
-                    headerShown: false
+                    headerShown: false,
                 }}
             />
             <Stack.Screen name="InfoScreen"
