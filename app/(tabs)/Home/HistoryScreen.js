@@ -2,6 +2,7 @@ import { View, Text, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useRouter, useLocalSearchParams } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { StatusBar } from 'expo-status-bar'
 
 const HistoryScreen = () => {
   const router = useRouter()
@@ -24,16 +25,16 @@ const HistoryScreen = () => {
 
   return (
     <>
-    <View style={{paddingTop: insets.top, backgroundColor:"white"}}/>
-    <View className="flex flex-col items-center justify-center p-3 pt-8 bg-white" >
-      <Text className="text-3xl font-bold">History</Text>
+    {/* <View style={{paddingTop: insets.top, backgroundColor:"white"}}/> */}
+    <StatusBar style="light" />
+    <View className="flex flex-col items-center justify-center p-3  bg-white" >
      {
       history.length > 0 ? (
-        <View className="flex flex-col items-center justify-center rounded-xl mt-8">
+        <View className="flex flex-col items-center justify-center rounded-xl ">
         <FlatList
           data={history}
-          renderItem={({ item, }) => (
-            <View className="flex flex-row items-center justify-between w-full p-3 border-b border-black/10"
+          renderItem={({ item, index }) => (
+            <View className={`flex flex-row items-center justify-between w-full p-3 border-b border-black/10 ${index % 2 === 0 ? 'bg-white' : 'bg-black/10'}`}
             >
               <View className="flex flex-row items-end my-3">
                   <Text className="text-sm font-bold text-black/30">$</Text>

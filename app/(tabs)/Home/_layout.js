@@ -13,7 +13,26 @@ const layout = () => {
             }} />
             <Stack.Screen name="HistoryScreen"
                 options={{
-                    headerShown: false,
+                    headerTitle: "History",
+                    headerTitleAlign: "center",
+                    headerTitleStyle: {
+                        color: "white",
+                        fontSize: 24,
+                        fontWeight: "bold",
+                    },
+                    headerLeft: () => (
+                        <Pressable onPress={() => router.back()}>
+                            <Undo2 size={28} color={"white"} strokeWidth={3} />
+                        </Pressable>
+                    ),
+                    headerLeftContainerStyle: { marginLeft: 16 },
+                    // header Style
+                    headerStyle: {
+                        backgroundColor: "#6BB239",
+                        shadowColor: "transparent",
+                        elevation: 0,
+                    },
+                    
                 }}
             />
             <Stack.Screen name="InfoScreen"

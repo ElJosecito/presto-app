@@ -5,7 +5,7 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { ChartLine, Calendar, Percent, ChevronRight, Undo2, User } from 'lucide-react-native'
-import { parse } from 'react-native-svg'
+
 const InfoScreen = () => {
     const insets = useSafeAreaInsets()
     const router = useRouter()
@@ -92,7 +92,7 @@ const InfoScreen = () => {
                                 <View className="flex-1 justify-center items-center">
                                     <View className="flex flex-row justify-end items-end">
                                         <Text className="text-xl">$</Text>
-                                        <Text className="text-5xl font-medium">
+                                        <Text className="text-5xl font-bold">
                                             {history[history.length - 1]?.amount || '0'}
                                         </Text>
                                     </View>

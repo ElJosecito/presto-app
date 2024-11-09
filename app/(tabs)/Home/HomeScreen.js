@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Plus, Search, X, Check, Key } from 'lucide-react-native'
 import { useRouter } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
 
 const HomeScreen = () => {
     const insets = useSafeAreaInsets()
@@ -145,6 +146,34 @@ const HomeScreen = () => {
                     date: '2022-12-12',
                     interest: 250,
                     principal: 250,
+                },
+                {
+                    id: 4,
+                    amount: 100,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                },
+                {
+                    id: 5,
+                    amount: 140,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                },
+                {
+                    id: 6,
+                    amount: 100,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
+                },
+                {
+                    id: 7,
+                    amount: 140,
+                    date: '2022-12-12',
+                    interest: 250,
+                    principal: 250,
                 }
             ]
         },
@@ -165,6 +194,7 @@ const HomeScreen = () => {
     return (
         <>
             <SafeAreaProvider>
+                <StatusBar style="dark" />
                 <View style={{ paddingTop: insets.top, flex: 0 }} />
                 <View className="flex-1 px-2">
                     <View className="flex flex-row justify-between items-center p-3">
@@ -257,9 +287,9 @@ const HomeScreen = () => {
                                             <Text className="font-bold capitalize text-lg">{item.name}</Text>
                                             <Text className="text-sm text-gray-400/80">{item.phone}</Text>
                                         </View>
-                                        <View className="flex-shrink">
+                                        <View className="flex flex-col items-end">
                                             <Text className="font-bold capitalize text-lg">$ {formatMoney(item.remainingBalance)}</Text>
-                                            <Text className="text-sm text-gray-400/80">{item.dueDate}</Text>
+                                            <Text className="text-sm text-gray-400/80">{item.nextPaymentDate}</Text>
                                         </View>
                                     </View>
                                 </View>
