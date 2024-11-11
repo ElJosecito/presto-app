@@ -16,7 +16,11 @@ const index = () => {
                     style={{ width: 150, height: 150, marginBottom: 20 }} />
                 <View className="w-full flex justify-center items-center">
                     {/* welcome back to presto */}
-                    <Text className="text-3xl font-bold text-white">Welcome back to Presto</Text>
+                    <View className="my-7">
+                        <Text className="text-4xl font-black text-center text-white">Hello Again!</Text>
+                        <Text className="text-white w-60 text-center px-4">Welcome back to Presto
+                            You’ve been missed!</Text>
+                    </View>
 
                     <View className="flex flex-row justify-center items-center w-full px-10">
                         <Pressable className="flex flex-row items-center justify-center w-full mt-5 p-3 bg-white rounded-full"
