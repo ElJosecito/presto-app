@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter, useLocalSearchParams } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
-
+import moment from 'moment'
 const HistoryScreen = () => {
   const router = useRouter()
   const params = useLocalSearchParams()
@@ -49,7 +49,7 @@ const HistoryScreen = () => {
                 </View>
                 <Text className="text-xl font-bold text-black">{item.principal}</Text>
                 <Text className="text-xl font-bold text-red-500">{item.interest}</Text>
-                <Text className="text-sm font-bold text-black/30">{item.date}</Text>
+                <Text className="text-sm font-bold text-black/30">{moment(item.date).format("L")}</Text>
             </View>
           )}
         />

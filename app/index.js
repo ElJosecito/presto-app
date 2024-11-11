@@ -2,11 +2,18 @@ import { View, Text, Pressable, Image } from 'react-native'
 import React, { useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { useRouter, Redirect } from 'expo-router'
+import { useAuthStore } from '../store/auth'
 
 const index = () => {
 
     const router = useRouter()
 
+    useEffect(() => {
+        const { token } = useAuthStore.getState()
+        if (token !== null) {
+            router.replace('/(tabs)/Home')
+        }
+    }, [])
 
     return (
         <>

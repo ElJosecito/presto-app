@@ -2,9 +2,9 @@ import { View, Text, Modal, Pressable, ScrollView, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import MonthlyPaymentChart from '../../../components/MonthlyPaymentChart'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
-
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { ChartLine, Calendar, Percent, ChevronRight, Undo2, User, XCircle, Phone, LogOut, Scroll } from 'lucide-react-native'
+import moment from 'moment'
 
 const InfoScreen = () => {
     const insets = useSafeAreaInsets()
@@ -13,8 +13,9 @@ const InfoScreen = () => {
 
 
     const handlePercentage = (total, remaining) => {
-        return (remaining * 100) / total
-    }
+        const paid = total - remaining;
+        return (paid * 100) / total;
+    };
 
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -103,7 +104,7 @@ const InfoScreen = () => {
 
                                 {/* Contenedor para la fecha en la parte inferior */}
                                 <View className="flex flex-row justify-between w-full">
-                                    <Text className="text-sm font-bold text-black/30">{history[history.length - 1]?.date || 'No date'}</Text>
+                                    <Text className="text-sm font-bold text-black/30">{moment(history[history.length - 1]?.date).format("L") || 'No date'}</Text>
                                     {
                                         params.isPaid === 'true' ? (
                                             <Text className="text-sm font-bold text-[#6BB239]">Paid</Text>
@@ -203,7 +204,7 @@ const InfoScreen = () => {
                                                 </View>
                                                 <Text className="text-xl font-bold text-black">{item.principal}</Text>
                                                 <Text className="text-xl font-bold text-red-500">{item.interest}</Text>
-                                                <Text className="text-sm font-bold text-black/30">{item.date}</Text>
+                                                <Text className="text-sm font-bold text-black/30">{moment(item.date).format("LL")}</Text>
                                             </View>
                                         ))
                                     }

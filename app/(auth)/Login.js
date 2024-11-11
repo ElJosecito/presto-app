@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Eye, EyeOff } from 'lucide-react-native'
 import { useRouter } from 'expo-router'
+import { useAuthStore } from '../../store/auth'
+import { login } from '../../api/auth'
 
 const Login = () => {
   const router = useRouter()
@@ -12,6 +14,23 @@ const Login = () => {
   const togglePassword = () => {
     setShowPassword(!showPassword)
   }
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const { setUser, setToken } = useAuthStore()
+
+
+  const handleLogin = async () => {
+    const response = await login(email, password)
+    if (response.status === 200) {
+      setUser(response.data.user)
+      setToken(response.data.token)
+      router.replace('/(tabs)/Home')
+    } else {
+      alert('Invalid credentials')
+    }
+  };
 
   return (
     <KeyboardAvoidingView behavior="padding" className="flex flex-1 justify-center w-full">
@@ -33,18 +52,27 @@ const Login = () => {
 
               <View className="w-full mb-4">
                 <Text className="font-bold mb-2 ">Your email address</Text>
-                <TextInput placeholder="Email" className="w-full px-6 py-2 h-14 rounded-2xl border border-black/25" />
+                <TextInput placeholder="Email" className="w-full px-6 py-2 h-14 rounded-2xl border border-black/25"
+                  onChangeText={setEmail}
+                  value={email}
+                />
               </View>
 
               <View className="w-full mb-4 relative">
                 <Text className="font-bold mb-2 ">Password Here</Text>
-                <TextInput placeholder="Password" className="w-full px-6 py-2 h-14 rounded-2xl border border-black/25" />
+                <TextInput placeholder="Password" className="w-full px-6 py-2 h-14 rounded-2xl border border-black/25"
+                  secureTextEntry={!showPassword}
+                  onChangeText={setPassword}
+                  value={password}
+                />
                 <View className="absolute right-0 top-6 mr-4 mt-4">
                   {showPassword ? <EyeOff onPress={togglePassword} color="grey" /> : <Eye onPress={togglePassword} color="grey" />}
                 </View>
               </View>
 
-              <Pressable className="w-full bg-[#6BB239] rounded-2xl mb-4 h-14 flex justify-center">
+              <Pressable className="w-full bg-[#6BB239] rounded-2xl mb-4 h-14 flex justify-center"
+                onPress={handleLogin}
+              >
                 <Text className="text-white text-center font-bold">Login</Text>
               </Pressable>
 
@@ -59,7 +87,7 @@ const Login = () => {
 
               <View className="flex flex-row justify-center items-center w-full">
                 <Text className="mr-1">Are you a client?</Text>
-                <Pressable onPress={()=>{
+                <Pressable onPress={() => {
                   router.push('LenderLogin')
                 }}>
                   <Text className="font-bold text-[#6BB239]">Login here</Text>

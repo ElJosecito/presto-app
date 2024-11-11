@@ -136,7 +136,7 @@ const MonthlyPaymentChart = ({ fill, loanAmount, remaining, paymentInterval }) =
 
             {/* Valores de cantidad y porcentaje en la parte inferior */}
             <View style={styles.bottomContainer}>
-                <Text className="text-2xl font-bold">{`$${formatMoney(remaining)
+                <Text className="text-2xl font-bold">{`$${formatMoney(loanAmount - remaining)
                     }/${formatLoanAmount(loanAmount)
                     }`}</Text>
                 <Text className="bg-[#181818] font-bold text-2xl">{fill}%</Text>
