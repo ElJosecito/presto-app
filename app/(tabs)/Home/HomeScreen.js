@@ -193,8 +193,9 @@ const HomeScreen = () => {
 
     return (
         <>
+        <StatusBar style="dark" />
             <SafeAreaProvider>
-                <StatusBar style="dark" />
+                
                 <View style={{ paddingTop: insets.top, flex: 0 }} />
                 <View className="flex-1 px-2">
                     <View className="flex flex-row justify-between items-center p-3">

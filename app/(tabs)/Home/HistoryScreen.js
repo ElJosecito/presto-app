@@ -28,6 +28,12 @@ const HistoryScreen = () => {
     {/* <View style={{paddingTop: insets.top, backgroundColor:"white"}}/> */}
     <StatusBar style="light" />
     <View className="flex flex-col items-center justify-center p-3  bg-white" >
+      <View className="flex flex-row items-center justify-between w-full p-3 border-b border-black/10 mt-10">
+        <Text className="text-lg font-bold text-black">Amount</Text>
+        <Text className="text-lg font-bold text-black">Principal</Text>
+        <Text className="text-lg font-bold text-red-500">Interest</Text>
+        <Text className="text-lg font-bold text-black">Date</Text>
+      </View>
      {
       history.length > 0 ? (
         <View className="flex flex-col items-center justify-center rounded-xl ">

@@ -101,7 +101,13 @@ const InfoScreen = () => {
                                 {/* Contenedor para la fecha en la parte inferior */}
                                 <View className="flex flex-row justify-between w-full">
                                     <Text className="text-sm font-bold text-black/30">{history[history.length - 1]?.date || 'No date'}</Text>
-                                    <Text className={`text-sm font-bold ${params.isPaid ? "text-[#6BB239]" : ""}`}>Paid</Text>
+                                    {
+                                        params.isPaid === 'true' ? (
+                                            <Text className="text-sm font-bold text-[#6BB239]">Paid</Text>
+                                        ) : (
+                                            <Text className="text-sm font-bold text-red-500">Unpaid</Text>
+                                        )
+                                    }
                                 </View>
                             </View>
                         </View>
