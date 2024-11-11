@@ -1,10 +1,10 @@
-import { View, Text, FlatList, Pressable, ScrollView } from 'react-native'
+import { View, Text, Modal, Pressable, ScrollView, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import MonthlyPaymentChart from '../../../components/MonthlyPaymentChart'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { ChartLine, Calendar, Percent, ChevronRight, Undo2, User } from 'lucide-react-native'
+import { ChartLine, Calendar, Percent, ChevronRight, Undo2, User, XCircle, Phone, LogOut, Scroll } from 'lucide-react-native'
 
 const InfoScreen = () => {
     const insets = useSafeAreaInsets()
@@ -17,6 +17,7 @@ const InfoScreen = () => {
     }
 
 
+    const [modalVisible, setModalVisible] = useState(false);
     const [history, setHistory] = useState([]);
 
     useEffect(() => {
@@ -52,7 +53,9 @@ const InfoScreen = () => {
                 <Pressable className="p-2 bg-white rounded-full" onPress={() => router.back()}>
                     <Undo2 size={28} strokeWidth={3} color={"#6BB239"} />
                 </Pressable>
-                <Pressable onPress={() => router.navigate('/(tabs)/User/UserScreen')}>
+                <Pressable onPress={() => {
+                    setModalVisible(true);
+                }}>
                     <View className="p-2 bg-white rounded-full">
                         <User size={24} strokeWidth={3} color={"#6BB239"} />
                     </View>
@@ -214,6 +217,102 @@ const InfoScreen = () => {
                     </View>
                 </View>
             </ScrollView>
+            {/* user details modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible)
+                }}
+            >
+                <View className="flex-1 justify-end items-center bg-black/50">
+                    <View className="flex flex-col bg-white rounded-2xl p-5 w-full h-3/5">
+                        <View className="flex flex-row justify-between">
+                            <Text className="text-2xl font-bold text-[#6BB239]">User Details</Text>
+                            <Pressable onPress={() => setModalVisible(!modalVisible)}>
+                                <XCircle size={24} color="#6BB239" strokeWidth={3} />
+                            </Pressable>
+                        </View>
+                        <ScrollView>
+                            <View className="flex flex-row items-center justify-start w-full mt-3 bg-white rounded-lg ">
+                                {
+                                    params.image ? (
+                                        <Image
+                                            source={{ uri: params.image }}
+                                            style={{ width: 80, height: 80, borderRadius: 100 }}
+                                        />
+                                    ) : (
+                                        <View className="flex items-center justify-center w-[100] h-[100] bg-black/10 rounded-full">
+                                            <User size={48} color="black" strokeWidth={2} />
+                                        </View>
+                                    )
+                                }
+                                <View className=" ml-5">
+                                    <Text className="text-xl font-black">{params.name}</Text>
+                                    <Text className="text-sm font-bold text-black/30">{params.email}</Text>
+                                </View>
+
+                            </View>
+
+                            <View className="mt-6 w-full">
+                                <Text className="text-lg font-bold text-black/30">Configuration</Text>
+                                <View className="flex flex-col items-center justify-center w-full mt-3 bg-[#F3F3F3] rounded-2xl p-3">
+                                    <View className="flex flex-row items-center justify-between w-full p-3 border-b border-black/10">
+                                        <View className="flex flex-row items-center">
+                                            <View className="flex items-center justify-center w-10 h-10 bg-white rounded-xl">
+                                                <Phone size={18} color="#6BB239" strokeWidth={3} />
+                                            </View>
+                                            <Text className="text-lg font-bold ml-4">Phone</Text>
+                                        </View>
+                                        <Text className="text-lg font-bold text-black/30">{params.phone}</Text>
+                                    </View>
+
+                                    <View className="flex flex-row items-center justify-between w-full p-3 border-b border-black/10">
+                                        <View className="flex flex-row items-center">
+                                            <View className="flex items-center justify-center w-10 h-10 bg-white rounded-xl">
+                                                <ChartLine size={18} color="#6BB239" strokeWidth={3} />
+                                            </View>
+                                            <Text className="text-lg font-bold ml-4">Loan Amount</Text>
+                                        </View>
+                                        <Text className="text-lg font-bold text-black/30">{params.loanAmount}</Text>
+                                    </View>
+
+                                    {/* loan Amount */}
+                                    <View className="flex flex-row items-center justify-between w-full p-3 border-b border-black/10">
+                                        <View className="flex flex-row items-center">
+                                            <View className="flex items-center justify-center w-10 h-10 bg-white rounded-xl">
+                                                <Percent size={18} color="#6BB239" strokeWidth={3} />
+                                            </View>
+                                            <Text className="text-lg font-bold ml-4">Interest Rate</Text>
+                                        </View>
+                                        <Text className="text-lg font-bold text-black/30">{params.interestRate}</Text>
+                                    </View>
+
+                                    {/* loan Amount */}
+                                    <View className="flex flex-row items-center justify-between w-full p-3 ">
+                                        <View className="flex flex-row items-center">
+                                            <View className="flex items-center justify-center w-10 h-10 bg-white rounded-xl">
+                                                <Calendar size={18} color="#6BB239" strokeWidth={3} />
+                                            </View>
+                                            <Text className="text-lg font-bold ml-4">Payment Interval</Text>
+                                        </View>
+                                        <Text className="text-lg font-bold text-black/30">{params.paymentIntervalDays}</Text>
+                                    </View>
+                                </View>
+
+                                {/* <View className="mt-6 w-full">
+                                <Text className="text-lg font-bold text-black/30">Log Out</Text>
+                                <Pressable className="flex flex-col items-center justify-center w-full mt-3 py-4 bg-red-500 rounded-2xl">
+                                    <Text className="text-lg font-bold text-white">Log Out</Text>
+                                </Pressable>
+                            </View> */}
+
+                            </View>
+                        </ScrollView>
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaProvider>
     )
 }

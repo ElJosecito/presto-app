@@ -48,6 +48,11 @@ const index = () => {
                             <Text className="font-bold text-white">Login here</Text>
                         </Pressable>
                     </View>
+
+                    {/* provisional btn for tabs screen */}
+                    <Pressable onPress={() => { router.replace('/(tabs)/Home') }}>
+                        <Text className="text-white">Go to Home</Text>
+                    </Pressable>
                 </View>
             </View>
         </>

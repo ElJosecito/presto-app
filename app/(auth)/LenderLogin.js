@@ -26,7 +26,7 @@ const LenderLogin = () => {
 
               <View className="w-full mb-4">
                 <Text className="font-bold mb-2 ">Your Client code</Text>
-                <TextInput placeholder="Email" className="w-full px-6 py-2 h-14 rounded-2xl border border-black/25" />
+                <TextInput placeholder="CLIENT-CODE-123456789" className="w-full px-6 py-2 h-14 rounded-2xl border border-black/25" />
               </View>
 
 
