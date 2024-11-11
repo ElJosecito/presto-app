@@ -1,32 +1,53 @@
 import { View, Text, Pressable, Image } from 'react-native'
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { useRouter, Redirect } from 'expo-router'
 
 const index = () => {
 
-  const router = useRouter()
+    const router = useRouter()
 
 
-  useEffect(() => {
-    console.log('index.js')
-  }, [])
+    return (
+        <>
+            <StatusBar style="light" />
+            <View className="flex flex-1 justify-center items-center bg-[#6BB239]">
+                <Image source={require('../assets/Presto-Logo-White-Version.png')}
+                    style={{ width: 150, height: 150, marginBottom: 20 }} />
+                <View className="w-full flex justify-center items-center">
+                    {/* welcome back to presto */}
+                    <Text className="text-3xl font-bold text-white">Welcome back to Presto</Text>
 
-  return (
-      <>
-          <StatusBar style="auto" />
-          <View className="flex flex-1 justify-center items-center bg-[#6BB239]">
-              <Image source={require('../assets/Presto-Logo-White-Version.png')} />
-              <Pressable onPress={() => router.replace('/(auth)/Login')} className="rounded-full px-6 py-1 bg-white">
-                  <Text className="text-[#6BB239] font-bold">Go to auth</Text>
-              </Pressable>
+                    <View className="flex flex-row justify-center items-center w-full px-10">
+                        <Pressable className="flex flex-row items-center justify-center w-full mt-5 p-3 bg-white rounded-full"
+                            onPress={() => { router.replace('/(auth)/Login') }}
+                        >
+                            <Text className="text-lg font-bold text-[#6BB239]">Login as a User</Text>
+                        </Pressable>
+                    </View>
 
-              <Pressable onPress={() => router.replace('/(tabs)/Home')} className="rounded-full px-6 py-1 bg-white">
-                  <Text className="text-[#6BB239] font-bold">Go to tabs</Text>
-              </Pressable>
-          </View>
-      </>
-  )
+
+                    {/* divider */}
+
+                    <View className="flex flex-row items-center justify-center w-full my-8">
+                        <View className="w-2/5 border border-white/30"></View>
+                        <Text className="mx-3 text-white">OR</Text>
+                        <View className="w-2/5 border border-white/30"></View>
+                    </View>
+
+
+                    <View className="flex flex-row justify-center items-center w-full">
+                        <Text className="mr-1 text-white">Are you a client?</Text>
+                        <Pressable onPress={() => {
+                            router.replace('/(auth)/LenderLogin')
+                        }}>
+                            <Text className="font-bold text-white">Login here</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </View>
+        </>
+    )
 }
 
 export default index
