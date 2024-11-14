@@ -250,7 +250,7 @@ const InfoScreen = () => {
                                     )
                                 }
                                 <View className=" ml-5">
-                                    <Text className="text-xl font-black">{params.name}</Text>
+                                    <Text className="text-xl font-black">{params.firstName + " " + params.lastName}</Text>
                                     <Text className="text-sm font-bold text-black/30">{params.email}</Text>
                                 </View>
 

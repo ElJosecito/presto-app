@@ -69,13 +69,12 @@ const HomeScreen = () => {
             number: formatPhoneNumber(phoneNumber),
             identification: formatCedula(cedula),
             loanAmount: Number(loanAmount),
-            interest: Number(interest),
+            interestRate: Number(interest),
             paymentInterval: Number(paymentInterval)
         }
-        console.log(user.id,client)
         const response = await addClient(user.id, client)
-        console.log(response)
-        if (response.status === 200) {
+        // console.log(response)
+        if (response.status === 201) {
             handleFetchUser()
             setModalVisible(!modalVisible)
         }

@@ -14,7 +14,7 @@ export const getUserById = async (id) => {
 
 export const addClient = async (id, client) => {
     try {
-        const response = await axios.post(`users/${id}/clients/create`, {client});
+        const response = await axios.post(`users/${id}/clients/create`, client);
         return response;
     } catch (error) {
         return error.response;
