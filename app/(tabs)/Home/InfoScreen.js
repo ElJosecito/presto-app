@@ -1,16 +1,19 @@
-import { View, Text, Modal, Pressable, ScrollView, Image } from 'react-native'
+import { View, Text, Modal, Pressable, ScrollView, Image, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import MonthlyPaymentChart from '../../../components/MonthlyPaymentChart'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { ChartLine, Calendar, Percent, ChevronRight, Undo2, User, XCircle, Phone, LogOut, Scroll } from 'lucide-react-native'
+import { ChartLine, Calendar, Percent, ChevronRight, Undo2, User, XCircle, Phone, LogOut, Scroll, Weight } from 'lucide-react-native'
 import moment from 'moment'
+import { useAuthStore } from '../../../store/auth'
+import { addPayment, getClientById } from '../../../api/client'
 
 const InfoScreen = () => {
     const insets = useSafeAreaInsets()
     const router = useRouter()
     const params = useLocalSearchParams()
 
+    const [client, setClient] = useState({});
 
     const handlePercentage = (total, remaining) => {
         const paid = total - remaining;
@@ -19,6 +22,7 @@ const InfoScreen = () => {
 
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [paymetModalVisible, setPaymentModalVisible] = useState(false);
     const [history, setHistory] = useState([]);
 
     useEffect(() => {
@@ -32,6 +36,37 @@ const InfoScreen = () => {
         }
     }, [params.history]);
 
+    const fetchClient = async () => {
+        const response = await getClientById(params._id);
+        console.log("Response:", response);
+        if (response.status === 200) {
+            setClient(response.data);
+            //setHistory(response.data.history);
+        }
+    }
+
+    useEffect(() => {
+        fetchClient();
+    }, []);
+
+
+
+    const [payment, setPayment] = useState("");
+
+    const handlePayment = async () => {
+        const paymentObject = {
+            paymentAmount: Number(payment),
+            isPaid: true,
+        };
+        console.log(params._id, paymentObject);
+        const response = await addPayment(params._id, paymentObject);
+        console.log("Response:", response);
+        if (response.status === 200) {
+            setPaymentModalVisible(false);
+            setHistory([...history, response.data]);
+        }
+        setPayment("");
+    };
 
     return (
         <SafeAreaProvider>
@@ -67,7 +102,7 @@ const InfoScreen = () => {
             >
                 <View className="flex-1 px-3">
                     <View className="pt-3">
-                        <MonthlyPaymentChart fill={handlePercentage(params.loanAmount, params.remainingBalance)} loanAmount={params.loanAmount} remaining={params.remainingBalance} paymentInterval={Number(params.paymentIntervalDays)} />
+                        <MonthlyPaymentChart fill={handlePercentage(client?.loanAmount, client?.remainingBalance)} loanAmount={client?.loanAmount} remaining={client?.remainingBalance} paymentInterval={Number(client?.paymentIntervalDays)} />
                     </View>
                     <View className="pt-3 flex flex-row justify-between">
                         <View className="flex-1"
@@ -106,7 +141,7 @@ const InfoScreen = () => {
                                 <View className="flex flex-row justify-between w-full">
                                     <Text className="text-sm font-bold text-black/30">{moment(history[history.length - 1]?.date).format("L") || 'No date'}</Text>
                                     {
-                                        params.isPaid === 'true' ? (
+                                        client?.isPaid === 'true' ? (
                                             <Text className="text-sm font-bold text-[#6BB239]">Paid</Text>
                                         ) : (
                                             <Text className="text-sm font-bold text-red-500">Unpaid</Text>
@@ -143,7 +178,7 @@ const InfoScreen = () => {
                                     <View className="flex flex-row justify-center items-center">
 
                                         <Text className="text-5xl font-bold">
-                                            {params.interestRate}
+                                            {client?.interestRate}
                                         </Text>
                                         <Percent size={28} color="#000" strokeWidth={3} />
                                     </View>
@@ -151,19 +186,19 @@ const InfoScreen = () => {
 
                                 {/* Contenedor para la paymentIntervalDays, si es 30 sera igual a mensual, si es 7 sera igual a semanal, etc. */}
                                 <View className="flex flex-row items-center w-full">
-                                    {Number(params.paymentIntervalDays) === 7 ? (
+                                    {Number(client?.paymentIntervalDays) === 7 ? (
                                         <Text className="text-sm font-bold text-black/30">Weekly</Text>
-                                    ) : Number(params.paymentIntervalDays) === 15 ? (
+                                    ) : Number(client?.paymentIntervalDays) === 15 ? (
                                         <Text className="text-sm font-bold text-black/30">Biweekly</Text>
-                                    ) : Number(params.paymentIntervalDays) === 30 ? (
+                                    ) : Number(client?.paymentIntervalDays) === 30 ? (
                                         <Text className="text-sm font-bold text-black/30">Monthly</Text>
-                                    ) : Number(params.paymentIntervalDays) === 90 ? (
+                                    ) : Number(client?.paymentIntervalDays) === 90 ? (
                                         <Text className="text-sm font-bold text-black/30">Quarterly</Text>
-                                    ) : Number(params.paymentIntervalDays) === 120 ? (
+                                    ) : Number(client?.paymentIntervalDays) === 120 ? (
                                         <Text className="text-sm font-bold text-black/30">Every 4 Months</Text>
-                                    ) : Number(params.paymentIntervalDays) === 180 ? (
+                                    ) : Number(client?.paymentIntervalDays) === 180 ? (
                                         <Text className="text-sm font-bold text-black/30">Every 6 Months</Text>
-                                    ) : Number(params.paymentIntervalDays) === 365 ? (
+                                    ) : Number(client?.paymentIntervalDays) === 365 ? (
                                         <Text className="text-sm font-bold text-black/30">Yearly</Text>
                                     ) : (
                                         <Text className="text-sm font-bold text-black/30">Custom Interval</Text>
@@ -228,19 +263,22 @@ const InfoScreen = () => {
                 }}
             >
                 <View className="flex-1 justify-end items-center bg-black/50">
-                    <View className="flex flex-col bg-white rounded-2xl p-5 w-full h-3/5">
+                    <View className="flex flex-col bg-white rounded-2xl p-5 w-full h-3/4">
                         <View className="flex flex-row justify-between">
                             <Text className="text-2xl font-bold text-[#6BB239]">User Details</Text>
                             <Pressable onPress={() => setModalVisible(!modalVisible)}>
                                 <XCircle size={24} color="#6BB239" strokeWidth={3} />
                             </Pressable>
                         </View>
-                        <ScrollView>
+                        <ScrollView
+                            showsVerticalScrollIndicator={false}
+                            nestedScrollEnabled={true}
+                        >
                             <View className="flex flex-row items-center justify-start w-full mt-3 bg-white rounded-lg ">
                                 {
-                                    params.image ? (
+                                    client.image ? (
                                         <Image
-                                            source={{ uri: params.image }}
+                                            source={{ uri: client?.image }}
                                             style={{ width: 80, height: 80, borderRadius: 100 }}
                                         />
                                     ) : (
@@ -250,8 +288,8 @@ const InfoScreen = () => {
                                     )
                                 }
                                 <View className=" ml-5">
-                                    <Text className="text-xl font-black">{params.firstName + " " + params.lastName}</Text>
-                                    <Text className="text-sm font-bold text-black/30">{params.email}</Text>
+                                    <Text className="text-xl font-black">{client?.firstName + " " + client?.lastName}</Text>
+                                    <Text className="text-sm font-bold text-black/30">{client?.email}</Text>
                                 </View>
 
                             </View>
@@ -266,7 +304,7 @@ const InfoScreen = () => {
                                             </View>
                                             <Text className="text-lg font-bold ml-4">Phone</Text>
                                         </View>
-                                        <Text className="text-lg font-bold text-black/30">{params.phone}</Text>
+                                        <Text className="text-lg font-bold text-black/30">{client?.phone}</Text>
                                     </View>
 
                                     <View className="flex flex-row items-center justify-between w-full p-3 border-b border-black/10">
@@ -276,7 +314,7 @@ const InfoScreen = () => {
                                             </View>
                                             <Text className="text-lg font-bold ml-4">Loan Amount</Text>
                                         </View>
-                                        <Text className="text-lg font-bold text-black/30">{params.loanAmount}</Text>
+                                        <Text className="text-lg font-bold text-black/30">{client?.loanAmount}</Text>
                                     </View>
 
                                     {/* loan Amount */}
@@ -287,7 +325,7 @@ const InfoScreen = () => {
                                             </View>
                                             <Text className="text-lg font-bold ml-4">Interest Rate</Text>
                                         </View>
-                                        <Text className="text-lg font-bold text-black/30">{params.interestRate}</Text>
+                                        <Text className="text-lg font-bold text-black/30">{client?.interestRate}</Text>
                                     </View>
 
                                     {/* loan Amount */}
@@ -298,22 +336,65 @@ const InfoScreen = () => {
                                             </View>
                                             <Text className="text-lg font-bold ml-4">Payment Interval</Text>
                                         </View>
-                                        <Text className="text-lg font-bold text-black/30">{params.paymentIntervalDays}</Text>
+                                        <Text className="text-lg font-bold text-black/30">{client?.paymentIntervalDays}</Text>
                                     </View>
                                 </View>
 
-                                {/* <View className="mt-6 w-full">
-                                <Text className="text-lg font-bold text-black/30">Log Out</Text>
-                                <Pressable className="flex flex-col items-center justify-center w-full mt-3 py-4 bg-red-500 rounded-2xl">
-                                    <Text className="text-lg font-bold text-white">Log Out</Text>
-                                </Pressable>
-                            </View> */}
-
+                                <View className="my-6 w-full">
+                                    <Text className="text-lg font-bold text-black/30">Add Payment</Text>
+                                    <Pressable className="flex flex-col items-center justify-center w-full mt-3 py-4 bg-blue-500 rounded-2xl"
+                                        onPress={() => setPaymentModalVisible(!paymetModalVisible)}
+                                    >
+                                        <Text className="text-lg font-bold text-white">payment</Text>
+                                    </Pressable>
+                                </View>
                             </View>
                         </ScrollView>
                     </View>
                 </View>
             </Modal>
+
+            {/* payment Modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={paymetModalVisible}
+                onRequestClose={() => {
+                    setPaymentModalVisible(!paymetModalVisible)
+                }}
+            >
+                <View className="flex-1 justify-end items-center bg-black/50">
+                    <View className="flex flex-col bg-white rounded-2xl p-5 w-full h-3/5">
+                        <View className="flex flex-row justify-between">
+                            <Text className="text-2xl font-bold text-[#6BB239]">Add Payment</Text>
+                            <Pressable onPress={() => setPaymentModalVisible(!paymetModalVisible)}>
+                                <XCircle size={24} color="#6BB239" strokeWidth={3} />
+                            </Pressable>
+                        </View>
+                        <ScrollView
+                            showsVerticalScrollIndicator={false}
+                            nestedScrollEnabled={true}
+                        >
+                            <View className="flex flex-col items-center justify-center w-full mt-3">
+                                <TextInput
+                                    placeholder="Enter Amount"
+                                    placeholderTextColor={"#6BB23950"}
+                                    keyboardType="numeric"
+                                    className="w-full px-6 py-2 h-14 rounded-2xl border border-black/25 font-bold"
+                                    onChangeText={setPayment}
+                                    value={payment}
+                                />
+                                <Pressable className="flex flex-col items-center justify-center w-full mt-3 py-4 bg-blue-500 rounded-2xl"
+                                    onPress={handlePayment}
+                                >
+                                    <Text className="text-lg font-bold text-white">Add Payment</Text>
+                                </Pressable>
+                            </View>
+                        </ScrollView>
+                    </View>
+                </View>
+            </Modal>
+
         </SafeAreaProvider>
     )
 }

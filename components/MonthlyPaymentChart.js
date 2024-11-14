@@ -18,7 +18,7 @@ const MonthlyPaymentChart = ({ fill, loanAmount, remaining, paymentInterval }) =
             // Si el número es entero, quita los decimales; si no, mantén un decimal
             return `${Number.isInteger(formatted) ? formatted : formatted.toFixed(1)}k`;
         }
-        return amount.toString();
+        return amount;
     };
 
     const formatMoney = (amount) => {
