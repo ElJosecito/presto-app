@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-// fontawesome5 react native
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const MonthlyPaymentChart = ({ fill, loanAmount, remaining, paymentInterval }) => {
@@ -15,20 +14,23 @@ const MonthlyPaymentChart = ({ fill, loanAmount, remaining, paymentInterval }) =
     const formatLoanAmount = (amount) => {
         if (amount >= 1000) {
             const formatted = amount / 1000;
-            // Si el número es entero, quita los decimales; si no, mantén un decimal
-            return `${Number.isInteger(formatted) ? formatted : formatted.toFixed(1)}k`;
+            return `${Number.isInteger(formatted) ? formatted : formatted?.toFixed(1)}k`;
         }
-        return amount;
+        return amount?.toFixed(); // Mostrar siempre dos decimales en loanAmount
     };
 
     const formatMoney = (amount) => {
         const num = Number(amount);
-        return num.toLocaleString('en-US');
+        return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    const formatPercentage = (percentage) => {
+        return percentage?.toFixed(1); // Redondea el porcentaje a un decimal
     };
 
     return (
         <View
-            className=" flex items-center p-3"
+            className="flex items-center p-3"
             style={{
                 backgroundColor: '#9AEF5E',
                 borderRadius: 15,
@@ -63,32 +65,28 @@ const MonthlyPaymentChart = ({ fill, loanAmount, remaining, paymentInterval }) =
                 <View className="flex flex-row items-start w-full px-3">
                     <Text className="text-xl mb-4 font-bold">Yearly</Text>
                 </View>
-
             ) : (
                 <View className="flex flex-row items-start w-full px-3">
                     <Text className="text-xl mb-4 font-bold">Custom Interval</Text>
                 </View>
             )}
 
-            {/* Contenedor para ocultar la mitad inferior */}
             <View style={styles.circularProgressContainer} className="relative">
-                {/* Círculo de fondo para el restante, rotación inversa */}
                 <AnimatedCircularProgress
                     size={300}
                     width={27}
                     fill={remainingFill}
-                    tintColor="#18181825" // Color del restante
-                    backgroundColor="transparent" // Sin fondo
-                    rotation={-90} // Rotación para llenar en sentido antihorario
-                    arcSweepAngle={180} // Ángulo de 180 grados para hacerlo semicircular
+                    tintColor="#18181825"
+                    backgroundColor="transparent"
+                    rotation={-90}
+                    arcSweepAngle={180}
                     lineCap="round"
                     style={{
-                        transform: [{ scaleX: -1 }], // Reflejo en el eje X (horizontal)
+                        transform: [{ scaleX: -1 }],
                         fontSize: 20,
                         color: 'blue',
                     }}
                 />
-
 
                 <FontAwesome
                     name="location-arrow"
@@ -99,47 +97,29 @@ const MonthlyPaymentChart = ({ fill, loanAmount, remaining, paymentInterval }) =
                         bottom: 0,
                         left: '50%',
                         transform: [
-                            { translateX: -30 }, // Centra la flecha horizontalmente
-                            { rotate: `${arrowRotation}deg` }, // Aplica la rotación
+                            { translateX: -30 },
+                            { rotate: `${arrowRotation}deg` },
                         ],
                         zIndex: 10
                     }}
                 />
 
-
-                {/* Círculo principal */}
                 <AnimatedCircularProgress
                     size={300}
                     width={27}
                     fill={fill}
-                    tintColor="#181818" // Color del progreso principal
-                    backgroundColor="transparent" // Sin fondo
-                    rotation={-90} // Para que el círculo sea semicircular
+                    tintColor="#181818"
+                    backgroundColor="transparent"
+                    rotation={-90}
                     lineCap="round"
-                    arcSweepAngle={180} // Ángulo de 180 grados para hacerlo semicircular
-                    style={StyleSheet.absoluteFillObject} // Superpone el círculo principal
+                    arcSweepAngle={180}
+                    style={StyleSheet.absoluteFillObject}
                 />
             </View>
 
-            {/* Flecha en el centro del gráfico */}
-            {/* <FontAwesome
-                name="location-arrow"
-                size={30}
-                color="black"
-                style={{
-                    position: 'absolute',
-                    top: 175,
-                    left: 165,
-                    transform: [{ rotate: `${arrowRotation}deg` }], // Rotación de la flecha
-                }}
-            /> */}
-
-            {/* Valores de cantidad y porcentaje en la parte inferior */}
             <View style={styles.bottomContainer}>
-                <Text className="text-2xl font-bold">{`$${formatMoney(loanAmount - remaining)
-                    }/${formatLoanAmount(loanAmount)
-                    }`}</Text>
-                <Text className="bg-[#181818] font-bold text-2xl">{fill}%</Text>
+                <Text className="text-2xl font-bold">{`$${formatMoney(loanAmount - remaining)}/${formatLoanAmount(loanAmount)}`}</Text>
+                <Text className="bg-[#181818] font-bold text-2xl">{formatPercentage(fill)}%</Text>
             </View>
         </View>
     );
@@ -152,8 +132,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     circularProgressContainer: {
-        height: 150, // Mitad de la altura del círculo para mostrar solo la parte superior
-        overflow: 'hidden', // Oculta la mitad inferior
+        height: 150,
+        overflow: 'hidden',
         alignItems: 'center',
     },
     bottomContainer: {

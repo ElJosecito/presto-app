@@ -5,7 +5,7 @@ import axios from '../libs/axios';
 
 export const addPayment = async (id, paymentObject) => {
     try {
-        const response = await axios.post(`clients/payment/${id}`, paymentObject);
+        const response = await axios.put(`clients/payment/${id}`, paymentObject);
         return response;
     } catch (error) {
         return error.response;

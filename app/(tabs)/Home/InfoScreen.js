@@ -20,30 +20,23 @@ const InfoScreen = () => {
         return (paid * 100) / total;
     };
 
-
     const [modalVisible, setModalVisible] = useState(false);
     const [paymetModalVisible, setPaymentModalVisible] = useState(false);
-    const [history, setHistory] = useState([]);
-
-    useEffect(() => {
-        try {
-            // Decodifica history a un array de objetos
-            const parsedHistory = JSON.parse(params.history);
-            setHistory(parsedHistory);
-            // console.log("Parsed History:", parsedHistory);
-        } catch (error) {
-            console.error("Error al parsear params.history:", error);
-        }
-    }, [params.history]);
 
     const fetchClient = async () => {
-        const response = await getClientById(params._id);
-        console.log("Response:", response);
-        if (response.status === 200) {
-            setClient(response.data);
-            //setHistory(response.data.history);
+        try {
+            const response = await getClientById(params._id);
+            if (response.status === 200) {
+                setClient(response.data);
+                console.log("Client data:", response.data);
+            } else {
+                console.error("Error fetching client data:", response.status);
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
         }
     }
+
 
     useEffect(() => {
         fetchClient();
@@ -54,19 +47,27 @@ const InfoScreen = () => {
     const [payment, setPayment] = useState("");
 
     const handlePayment = async () => {
+        if (isNaN(payment) || payment <= 0) {
+            alert("Please enter a valid payment amount.");
+            return;
+        }
+
         const paymentObject = {
             paymentAmount: Number(payment),
             isPaid: true,
         };
-        console.log(params._id, paymentObject);
-        const response = await addPayment(params._id, paymentObject);
-        console.log("Response:", response);
-        if (response.status === 200) {
-            setPaymentModalVisible(false);
-            setHistory([...history, response.data]);
+
+        try {
+            const response = await addPayment(params._id, paymentObject);
+            if (response.status === 200) {
+                setPaymentModalVisible(false);
+            }
+        } catch (error) {
+            console.error("Error adding payment:", error);
         }
         setPayment("");
     };
+
 
     return (
         <SafeAreaProvider>
@@ -132,16 +133,18 @@ const InfoScreen = () => {
                                     <View className="flex flex-row justify-end items-end">
                                         <Text className="text-xl">$</Text>
                                         <Text className="text-5xl font-bold">
-                                            {history[history.length - 1]?.amount || '0'}
+                                            {client?.paymentHistory && client?.paymentHistory.length > 0
+                                                ? client.paymentHistory[client.paymentHistory.length - 1]?.amount
+                                                : 'N/A'}
                                         </Text>
                                     </View>
                                 </View>
 
                                 {/* Contenedor para la fecha en la parte inferior */}
                                 <View className="flex flex-row justify-between w-full">
-                                    <Text className="text-sm font-bold text-black/30">{moment(history[history.length - 1]?.date).format("L") || 'No date'}</Text>
+                                    <Text className="text-sm font-bold text-black/30">{moment(client?.paymentHistory?.[client?.paymentHistory.length - 1]?.date).format("L") || 'No date'}</Text>
                                     {
-                                        client?.isPaid === 'true' ? (
+                                        client?.isPaid === true ? (
                                             <Text className="text-sm font-bold text-[#6BB239]">Paid</Text>
                                         ) : (
                                             <Text className="text-sm font-bold text-red-500">Unpaid</Text>
@@ -178,7 +181,7 @@ const InfoScreen = () => {
                                     <View className="flex flex-row justify-center items-center">
 
                                         <Text className="text-5xl font-bold">
-                                            {client?.interestRate}
+                                            {client?.interestRate ? `${client.interestRate}` : 'N/A'}
                                         </Text>
                                         <Percent size={28} color="#000" strokeWidth={3} />
                                     </View>
@@ -215,19 +218,19 @@ const InfoScreen = () => {
                             <Pressable className="p-1 rounded-full bg-black" onPress={() => router?.push({
                                 pathname: '/(tabs)/Home/HistoryScreen',
                                 params: {
-                                    history: JSON.stringify(history)
+                                    history: JSON.stringify(client?.paymentHistory)
                                 }
                             })}>
                                 <ChevronRight size={24} color="#fff" strokeWidth={3} />
                             </Pressable>
                         </View>
                         {
-                            history.length > 0 ? (
+                            client?.paymentHistory?.length > 0 ? (
                                 <ScrollView
                                     showsVerticalScrollIndicator={false}
                                     nestedScrollEnabled={true}>
                                     {
-                                        history.map((item, index) => (
+                                        client?.paymentHistory.map((item, index) => (
                                             <View
                                                 key={index}
                                                 className="flex flex-row items-center justify-between border-b border-black/10 mt-2"
@@ -235,7 +238,6 @@ const InfoScreen = () => {
                                                 <View className="flex flex-row items-end">
                                                     <Text className="text-sm font-bold text-black/30">$</Text>
                                                     <Text className="text-3xl font-bold text-[#000000]">{item.amount}</Text>
-
                                                 </View>
                                                 <Text className="text-xl font-bold text-black">{item.principal}</Text>
                                                 <Text className="text-xl font-bold text-red-500">{item.interest}</Text>
