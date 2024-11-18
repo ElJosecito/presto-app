@@ -47,8 +47,8 @@ const HistoryScreen = () => {
                   <Text className="text-3xl font-bold text-[#000000]">{item.amount}</Text>
 
                 </View>
-                <Text className="text-xl font-bold text-black">{item.principal}</Text>
-                <Text className="text-xl font-bold text-red-500">{item.interest}</Text>
+                <Text className="text-xl font-bold text-black">{item.principal.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</Text>
+                <Text className="text-xl font-bold text-red-500">{item.interest.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</Text>
                 <Text className="text-sm font-bold text-black/30">{moment(item.date).format("L")}</Text>
             </View>
           )}
