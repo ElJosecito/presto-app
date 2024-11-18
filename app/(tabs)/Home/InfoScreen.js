@@ -5,7 +5,6 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { ChartLine, Calendar, Percent, ChevronRight, Undo2, User, XCircle, Phone, LogOut, Scroll, Weight } from 'lucide-react-native'
 import moment from 'moment'
-import { useAuthStore } from '../../../store/auth'
 import { addPayment, getClientById } from '../../../api/client'
 
 const InfoScreen = () => {
@@ -14,10 +13,11 @@ const InfoScreen = () => {
     const params = useLocalSearchParams()
 
     const [client, setClient] = useState({});
+    const [clientFill, setClientFill] = useState(0);
 
     const handlePercentage = (total, remaining) => {
         const paid = total - remaining;
-        return (paid * 100) / total;
+        return Number((paid * 100) / total);
     };
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -43,6 +43,13 @@ const InfoScreen = () => {
     }, []);
 
 
+    useEffect(() => {
+        if (client.loanAmount && client.remainingBalance) {
+            const fill = handlePercentage(client.loanAmount, client.remainingBalance);
+            setClientFill(Math.round(fill));
+        }
+    }, [client]);
+
 
     const [payment, setPayment] = useState("");
 
@@ -61,6 +68,7 @@ const InfoScreen = () => {
             const response = await addPayment(params._id, paymentObject);
             if (response.status === 200) {
                 setPaymentModalVisible(false);
+                fetchClient();
             }
         } catch (error) {
             console.error("Error adding payment:", error);
@@ -103,7 +111,7 @@ const InfoScreen = () => {
             >
                 <View className="flex-1 px-3">
                     <View className="pt-3">
-                        <MonthlyPaymentChart fill={handlePercentage(client?.loanAmount, client?.remainingBalance)} loanAmount={client?.loanAmount} remaining={client?.remainingBalance} paymentInterval={Number(client?.paymentIntervalDays)} />
+                        <MonthlyPaymentChart fill={clientFill} loanAmount={client?.loanAmount} remaining={client?.remainingBalance} paymentInterval={Number(client?.paymentIntervalDays)} />
                     </View>
                     <View className="pt-3 flex flex-row justify-between">
                         <View className="flex-1"
@@ -135,7 +143,7 @@ const InfoScreen = () => {
                                         <Text className="text-5xl font-bold">
                                             {client?.paymentHistory && client?.paymentHistory.length > 0
                                                 ? client.paymentHistory[client.paymentHistory.length - 1]?.amount
-                                                : 'N/A'}
+                                                : '0'}
                                         </Text>
                                     </View>
                                 </View>
@@ -239,8 +247,8 @@ const InfoScreen = () => {
                                                     <Text className="text-sm font-bold text-black/30">$</Text>
                                                     <Text className="text-3xl font-bold text-[#000000]">{item.amount}</Text>
                                                 </View>
-                                                <Text className="text-xl font-bold text-black">{item.principal}</Text>
-                                                <Text className="text-xl font-bold text-red-500">{item.interest}</Text>
+                                                <Text className="text-xl font-bold text-black">{item.principal.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</Text>
+                                                <Text className="text-xl font-bold text-red-500">{item.interest.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</Text>
                                                 <Text className="text-sm font-bold text-black/30">{moment(item.date).format("LL")}</Text>
                                             </View>
                                         ))
@@ -306,7 +314,7 @@ const InfoScreen = () => {
                                             </View>
                                             <Text className="text-lg font-bold ml-4">Phone</Text>
                                         </View>
-                                        <Text className="text-lg font-bold text-black/30">{client?.phone}</Text>
+                                        <Text className="text-lg font-bold text-black/30">{client?.number}</Text>
                                     </View>
 
                                     <View className="flex flex-row items-center justify-between w-full p-3 border-b border-black/10">

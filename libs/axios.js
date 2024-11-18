@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const instance = axios.create({
-    baseURL: "http://10.0.0.180:3000/api/",
+    baseURL: "http://10.0.0.178:3000/api/",
 });
 
 instance.interceptors.request.use((config) => {
