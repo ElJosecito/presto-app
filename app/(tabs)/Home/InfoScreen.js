@@ -385,6 +385,23 @@ const InfoScreen = () => {
                             showsVerticalScrollIndicator={false}
                             nestedScrollEnabled={true}
                         >
+
+                            <View className="flex flex-row items-center justify-between w-full mt-3 bg-white rounded-lg p-3">
+                                <Text className="text-lg font-bold text-black">Remaining</Text>
+                                <Text className="text-lg font-bold text-black">
+                                    {`$${((client?.remainingBalance / client?.loanAmount) * 100).toFixed(2)}%`}
+                                </Text>
+                            </View>
+                            <View className="flex flex-row items-center justify-between w-full mt-3 bg-white rounded-lg p-3">
+                                <Text className="text-lg font-bold text-black">Loan Amount</Text>
+                                <Text className="text-lg font-bold text-black">{`$${client?.loanAmount}`}</Text>
+                            </View>
+                            <View className="flex flex-row items-center justify-between w-full mt-3 bg-white rounded-lg p-3">
+                                <Text className="text-lg font-bold text-black">Remaining Balance</Text>
+                                <Text className="text-lg font-bold text-black">{`$${client?.remainingBalance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`}</Text>
+                            </View>
+
+
                             <View className="flex flex-col items-center justify-center w-full mt-3">
                                 <TextInput
                                     placeholder="Enter Amount"

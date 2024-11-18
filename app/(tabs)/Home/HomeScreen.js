@@ -11,7 +11,7 @@ import moment from 'moment'
 const HomeScreen = () => {
     const insets = useSafeAreaInsets()
     const router = useRouter()
-    
+
     // client data
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -28,7 +28,8 @@ const HomeScreen = () => {
 
     const formatMoney = (amount) => {
         const num = Number(amount);
-        return num.toLocaleString('en-US');
+        return num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+        
     };
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -179,7 +180,9 @@ const HomeScreen = () => {
                                             </View>
                                             <View className="flex-1 flex-row justify-between items-start p-3 ">
                                                 <View className="flex-shrink">
-                                                    <Text className="font-bold capitalize text-lg">{`${item.firstName} ${item.lastName}`}</Text>
+                                                    <Text className="font-bold capitalize text-lg">
+                                                        {`${item.firstName.split(' ')[0]} ${item.lastName.split(' ')[0]}`}
+                                                    </Text>
                                                     <Text className="text-sm text-gray-400/80">{item.number}</Text>
                                                 </View>
                                                 <View className="flex flex-col items-end">
