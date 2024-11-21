@@ -11,8 +11,6 @@ instance.interceptors.request.use((config) => {
 
     const { token } = useAuthStore.getState();
 
-
-
     config.headers = {
         "auth-token": token,
     }
